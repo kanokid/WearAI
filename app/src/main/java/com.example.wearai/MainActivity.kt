@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 
 /**
  * WearAI Application
- * 
+ *
  * A Wear OS app that uses Gemini AI to generate responses to user questions.
  * Features include:
  * - Multiple model selection
@@ -60,9 +60,9 @@ class MainActivity : ComponentActivity() {
             // App state
             val isDarkTheme = remember { mutableStateOf(true) }
             val isGreenText = remember { mutableStateOf(true) }
-            val selectedModel = remember { mutableStateOf("gemini-2.5-flash") }
+            val selectedModel = remember { mutableStateOf("gemini-1.0-pro") }
             val conversationHistory = remember { mutableStateListOf<Message>() }
-            
+
             WearAIApp(
                 isDarkTheme = isDarkTheme,
                 isGreenText = isGreenText,
@@ -82,14 +82,14 @@ fun ModelSelector(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    
+
     if (expanded) {
         ScalingLazyColumn(
             modifier = modifier.fillMaxSize(),
         ) {
             items(models) { model ->
-                CompactChip(
-                    onClick = { 
+                CompactButton(
+                    onClick = {
                         onModelSelected(model)
                         expanded = false
                     },
@@ -100,14 +100,14 @@ fun ModelSelector(
                             fontSize = 12.sp
                         )
                     },
-                    colors = ChipDefaults.chipColors(
-                        backgroundColor = UIConstants.BUTTON_BACKGROUND
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = UIConstants.BUTTON_BACKGROUND
                     )
                 )
             }
         }
     } else {
-        CompactChip(
+        CompactButton(
             onClick = { expanded = true },
             label = {
                 Text(
@@ -124,8 +124,8 @@ fun ModelSelector(
                     modifier = Modifier.size(UIConstants.ICON_SIZE)
                 )
             },
-            colors = ChipDefaults.chipColors(
-                backgroundColor = UIConstants.BUTTON_BACKGROUND
+            colors = ButtonDefaults.buttonColors(
+                containerColor = UIConstants.BUTTON_BACKGROUND
             )
         )
     }
@@ -145,9 +145,9 @@ fun WearAIApp(
         val isLoading = remember { mutableStateOf(false) }
         val textColor = if (isGreenText.value) Color.Green else Color.White
         val backgroundColor = if (isDarkTheme.value) Color.Black else Color.White
-        
+
         // Available models
-        val models = listOf("gemini-2.5-flash", "gemini-2.5-flash-experimental")
+        val models = listOf("gemini-1.0-pro", "gemini-1.5-flash")
 
         // Get API key from resources
         val apiKey = stringResource(id = R.string.gemini_api_key)
@@ -159,7 +159,7 @@ fun WearAIApp(
                 apiKey = apiKey
             )
         }
-        
+
         // Function to handle sending messages
         val sendMessage = {
             if (question.value.isNotEmpty()) {
@@ -169,10 +169,10 @@ fun WearAIApp(
                     isUser = true
                 )
                 conversationHistory.add(userMessage)
-                
+
                 // Start loading
                 isLoading.value = true
-                
+
                 // Use coroutine to get AI response
                 scope.launch {
                     try {
@@ -195,47 +195,49 @@ fun WearAIApp(
                 }
             }
         }
-        
-        SwipeDismissableNavHost(
-            navController = navController,
-            startDestination = Routes.HOME
-        ) {
-            composable(Routes.HOME) {
-                HomeScreen(
-                    models = models,
-                    selectedModel = selectedModel.value,
-                    onModelSelected = { selectedModel.value = it },
-                    textColor = textColor,
-                    backgroundColor = backgroundColor,
-                    question = question,
-                    isLoading = isLoading,
-                    onSendQuestion = sendMessage,
-                    onThemeToggle = { isDarkTheme.value = !isDarkTheme.value },
-                    onTextColorToggle = { isGreenText.value = !isGreenText.value },
-                    onViewConversation = { navController.navigate(Routes.CONVERSATION) },
-                    onOpenSettings = { navController.navigate(Routes.SETTINGS) }
-                )
-            }
 
-            composable(Routes.CONVERSATION) {
-                ConversationScreen(
-                    messages = conversationHistory,
-                    onBackClick = { navController.popBackStack() },
-                    isDarkTheme = isDarkTheme.value,
-                    textColor = textColor
-                )
-            }
+        AppScaffold {
+            SwipeDismissableNavHost(
+                navController = navController,
+                startDestination = Routes.HOME
+            ) {
+                composable(Routes.HOME) {
+                    HomeScreen(
+                        models = models,
+                        selectedModel = selectedModel.value,
+                        onModelSelected = { selectedModel.value = it },
+                        textColor = textColor,
+                        backgroundColor = backgroundColor,
+                        question = question,
+                        isLoading = isLoading,
+                        onSendQuestion = sendMessage,
+                        onThemeToggle = { isDarkTheme.value = !isDarkTheme.value },
+                        onTextColorToggle = { isGreenText.value = !isGreenText.value },
+                        onViewConversation = { navController.navigate(Routes.CONVERSATION) },
+                        onOpenSettings = { navController.navigate(Routes.SETTINGS) }
+                    )
+                }
 
-            composable(Routes.SETTINGS) {
-                // Create a Color MutableState for the settings screen
-                val selectedTextColor = remember { mutableStateOf(if (isGreenText.value) Color.Green else Color.White) }
+                composable(Routes.CONVERSATION) {
+                    ConversationScreen(
+                        messages = conversationHistory,
+                        onBackClick = { navController.popBackStack() },
+                        isDarkTheme = isDarkTheme.value,
+                        textColor = textColor
+                    )
+                }
 
-                SettingsScreen(
-                    isDarkTheme = isDarkTheme,
-                    selectedTextColor = selectedTextColor,
-                    selectedModel = selectedModel,
-                    onNavigateBack = { navController.popBackStack() }
-                )
+                composable(Routes.SETTINGS) {
+                    // Create a Color MutableState for the settings screen
+                    val selectedTextColor = remember { mutableStateOf(if (isGreenText.value) Color.Green else Color.White) }
+
+                    SettingsScreen(
+                        isDarkTheme = isDarkTheme,
+                        selectedTextColor = selectedTextColor,
+                        selectedModel = selectedModel,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
@@ -258,11 +260,10 @@ fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    Scaffold(
+    ScreenScaffold(
         timeText = { TimeText() },
-        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-        positionIndicator = {
-            PositionIndicator(scrollState = scrollState)
+        scrollIndicator = {
+            ScrollIndicator(scrollState = scrollState)
         }
     ) { paddingValues ->
         Column(
@@ -315,7 +316,7 @@ fun HomeScreen(
                     contentDescription = "Open settings"
                 )
             }
-            
+
             // Text input
             TextInputCircle(
                 placeholder = "Ask Gemini...",
@@ -323,7 +324,7 @@ fun HomeScreen(
                 onValueChange = { question.value = it },
                 textColor = textColor
             )
-            
+
             // Send button
             if (question.value.isNotEmpty()) {
                 AnimatedActionIconButton(
@@ -332,7 +333,7 @@ fun HomeScreen(
                     contentDescription = "Send message"
                 )
             }
-            
+
             // Loading indicator
             if (isLoading.value) {
                 CircularProgressIndicator(
@@ -353,11 +354,10 @@ fun ConversationScreen(
     textColor: Color
 ) {
     val listState = rememberScalingLazyListState()
-    
-    Scaffold(
+
+    ScreenScaffold(
         timeText = { TimeText() },
-        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-        positionIndicator = { PositionIndicator(scalingLazyListState = listState) }
+        scrollIndicator = { ScrollIndicator(scalingLazyListState = listState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -374,7 +374,7 @@ fun ConversationScreen(
                     contentDescription = "Go back"
                 )
             }
-            
+
             // Message list with standard Wear OS scrolling
             ScalingLazyColumn(
                 modifier = Modifier
@@ -404,8 +404,8 @@ fun SettingsScreen(
 ) {
     val scrollState = rememberScrollState()
     // Use the same models as defined in WearAIApp
-    val models = listOf("gemini-2.5-flash", "gemini-2.5-flash-experimental")
-    
+    val models = listOf("gemini-1.0-pro", "gemini-1.0-pro-thinking-experimental")
+
     val availableTextColors = listOf(
         UIConstants.TEXT_PRIMARY_DARK,
         UIConstants.TEXT_GREEN,
@@ -414,19 +414,16 @@ fun SettingsScreen(
         UIConstants.TEXT_ORANGE,
         UIConstants.TEXT_PINK
     )
-    
+
     val backgroundColor = if (isDarkTheme.value) UIConstants.BACKGROUND_DARK else UIConstants.BACKGROUND_LIGHT
     val textColor = selectedTextColor.value
-    
-    Scaffold(
+
+    ScreenScaffold(
         timeText = {
             TimeText()
         },
-        vignette = {
-            Vignette(vignettePosition = VignettePosition.TopAndBottom)
-        },
-        positionIndicator = {
-            PositionIndicator(
+        scrollIndicator = {
+            ScrollIndicator(
                 scrollState = scrollState
             )
         }
@@ -453,9 +450,9 @@ fun SettingsScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // Theme selector
                 SettingsChip(
                     text = if (isDarkTheme.value) "Dark Theme" else "Light Theme",
@@ -463,7 +460,7 @@ fun SettingsScreen(
                     onClick = { isDarkTheme.value = !isDarkTheme.value },
                     textColor = textColor
                 )
-                
+
                 // Model selector section
                 Text(
                     text = "Model",
@@ -472,13 +469,13 @@ fun SettingsScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                
+
                 // Model selection chips
                 models.forEach { model ->
                     val isSelected = selectedModel.value == model
                     val chipColor = if (isSelected) UIConstants.PRIMARY_DARK else UIConstants.BUTTON_BACKGROUND
-                    
-                    CompactChip(
+
+                    CompactButton(
                         onClick = { selectedModel.value = model },
                         label = {
                             Text(
@@ -487,14 +484,14 @@ fun SettingsScreen(
                                 fontSize = UIConstants.CAPTION_TEXT_SIZE
                             )
                         },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = chipColor
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = chipColor
                         )
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // Text color selection
                 Text(
                     text = "Text Color",
@@ -503,7 +500,7 @@ fun SettingsScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                
+
                 // Color selection row
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -517,9 +514,9 @@ fun SettingsScreen(
                         )
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // Back button
                 AnimatedActionButton(
                     onClick = onNavigateBack,
@@ -530,4 +527,4 @@ fun SettingsScreen(
             }
         }
     }
-} 
+}

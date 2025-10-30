@@ -29,7 +29,7 @@ android {
         }
         
         // Define API key as a string resource with the provided key
-        resValue("string", "gemini_api_key", "AIzaSyAHXKcPDsbyDcBkY4FtLECnaJO9jMVk9m0")
+        resValue("string", "gemini_api_key", localProperties.getProperty("gemini_api_key"))
     }
 
     buildTypes {
@@ -111,7 +111,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Wear OS specific dependencies
-    implementation(libs.compose.material)
+    implementation("androidx.wear.compose:compose-material3:1.0.0-alpha21")
     implementation(libs.compose.foundation)
     implementation(libs.compose.navigation)
     implementation("androidx.wear:wear-input:1.1.0")
