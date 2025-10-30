@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Circular background -->
+    <path
+        android:fillColor="#0097A7"
+        android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"/>
+    
+    <!-- Outer ring -->
+    <path
+        android:strokeColor="#4DD0E1"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M54,54m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0"/>
+        
+    <!-- AI Symbol -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M68,44H66V42c0,-1.1 -0.9,-2 -2,-2h-4V38c0,-1.1 -0.9,-2 -2,-2H50c-1.1,0 -2,0.9 -2,2v2h-4c-1.1,0 -2,0.9 -2,2v2h-2c-1.1,0 -2,0.9 -2,2v20c0,1.1 0.9,2 2,2h2v2c0,1.1 0.9,2 2,2h4v2c0,1.1 0.9,2 2,2h10c1.1,0 2,-0.9 2,-2v-2h4c1.1,0 2,-0.9 2,-2v-2h2c1.1,0 2,-0.9 2,-2V46C70,44.9 69.1,44 68,44zM60,68H48c-0.55,0 -1,-0.45 -1,-1V47c0,-0.55 0.45,-1 1,-1h12c0.55,0 1,0.45 1,1v20C61,67.55 60.55,68 60,68z"/>
+    
+    <!-- Accent dot -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M72,54m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0"/>
+</vector> 

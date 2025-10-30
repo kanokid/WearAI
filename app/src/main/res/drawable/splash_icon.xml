@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background circle -->
+    <item
+        android:width="56dp"
+        android:height="56dp"
+        android:gravity="center">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="28dp"
+                android:startColor="#4DD0E1"
+                android:endColor="#0097A7" />
+        </shape>
+    </item>
+
+    <!-- AI Icon, slightly modernized -->
+    <item
+        android:width="48dp"
+        android:height="48dp"
+        android:gravity="center">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:tint="#FFFFFF"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M21,10.5H20V8.5c0,-0.6 -0.4,-1 -1,-1h-2V6.5c0,-0.8 -0.7,-1.5 -1.5,-1.5h-7C7.7,5 7,5.7 7,6.5v1H5c-0.6,0 -1,0.4 -1,1v2H3c-0.5,0 -1,0.5 -1,1v5c0,0.5 0.5,1 1,1h1v2c0,0.6 0.4,1 1,1h2v1c0,0.5 0.5,1 1,1h8c0.5,0 1,-0.5 1,-1v-1h2c0.6,0 1,-0.4 1,-1v-2h1c0.5,0 1,-0.5 1,-1v-5C22,11 21.5,10.5 21,10.5zM16.5,18h-9c-0.3,0 -0.5,-0.2 -0.5,-0.5v-9c0,-0.3 0.2,-0.5 0.5,-0.5h9c0.3,0 0.5,0.2 0.5,0.5v9C17,17.8 16.8,18 16.5,18z"/>
+        </vector>
+    </item>
+
+    <!-- Pulsing dot for "AI activity" effect -->
+    <item
+        android:width="8dp"
+        android:height="8dp"
+        android:gravity="center"
+        android:right="5dp"
+        android:bottom="5dp">
+        <shape android:shape="oval">
+            <solid android:color="#FF5252" />
+        </shape>
+    </item>
+</layer-list>
