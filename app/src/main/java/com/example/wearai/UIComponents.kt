@@ -128,7 +128,7 @@ fun SettingsChip(
             Text(
                 text = text,
                 color = textColor,
-                fontSize = UIConstants.BODY_TEXT_SIZE,
+                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center
             )
         }
@@ -179,7 +179,7 @@ fun GradientMessageBubble(
                     Text(
                         text = message.text,
                         color = textColor,
-                        fontSize = UIConstants.BODY_TEXT_SIZE
+                        style = MaterialTheme.typography.body1
                     )
                 }
             },
@@ -328,7 +328,7 @@ fun TextInputCircle(
                 text = if (value.isEmpty()) placeholder else value,
                 color = textColor,
                 maxLines = 2,
-                fontSize = 12.sp
+                style = MaterialTheme.typography.caption1
             )
         },
         colors = ButtonDefaults.buttonColors(
@@ -374,7 +374,7 @@ fun MessageBubble(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 8.dp),
         contentAlignment = bubbleAlignment
     ) {
         Box(
@@ -382,12 +382,12 @@ fun MessageBubble(
                 .widthIn(max = 200.dp)
                 .clip(bubbleShape)
                 .background(if (message.isUser) userGradient else aiGradient)
-                .padding(8.dp)
+                .padding(12.dp)
         ) {
             Text(
                 text = message.text,
                 color = textColor,
-                fontSize = 12.sp
+                style = MaterialTheme.typography.body1
             )
         }
     }

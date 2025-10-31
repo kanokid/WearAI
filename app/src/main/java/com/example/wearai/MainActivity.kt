@@ -97,7 +97,7 @@ fun ModelSelector(
                         Text(
                             text = model,
                             color = textColor,
-                            fontSize = 12.sp
+                            style = MaterialTheme.typography.caption1
                         )
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -114,7 +114,7 @@ fun ModelSelector(
                     text = "Model: ${selectedModel.substringAfter("gemini-")}",
                     color = textColor,
                     maxLines = 1,
-                    fontSize = 12.sp
+                    style = MaterialTheme.typography.caption1
                 )
             },
             icon = {
@@ -270,10 +270,10 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(8.dp)
+                .padding(16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Model selector
             ModelSelector(
@@ -445,7 +445,7 @@ fun SettingsScreen(
                 // Settings title
                 Text(
                     text = "Settings",
-                    fontSize = UIConstants.TITLE_TEXT_SIZE,
+                    style = MaterialTheme.typography.title3,
                     color = textColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -464,7 +464,7 @@ fun SettingsScreen(
                 // Model selector section
                 Text(
                     text = "Model",
-                    fontSize = UIConstants.BODY_TEXT_SIZE,
+                    style = MaterialTheme.typography.body1,
                     color = textColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -481,7 +481,7 @@ fun SettingsScreen(
                             Text(
                                 text = model.substringAfter("gemini-"),
                                 color = textColor,
-                                fontSize = UIConstants.CAPTION_TEXT_SIZE
+                                style = MaterialTheme.typography.caption1
                             )
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -495,7 +495,7 @@ fun SettingsScreen(
                 // Text color selection
                 Text(
                     text = "Text Color",
-                    fontSize = UIConstants.BODY_TEXT_SIZE,
+                    style = MaterialTheme.typography.body1,
                     color = textColor,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
