@@ -88,7 +88,7 @@ fun ModelSelector(
             modifier = modifier.fillMaxSize(),
         ) {
             items(models) { model ->
-                CompactChip(
+                CompactButton(
                     onClick = { 
                         onModelSelected(model)
                         expanded = false
@@ -100,14 +100,14 @@ fun ModelSelector(
                             fontSize = 12.sp
                         )
                     },
-                    colors = ChipDefaults.chipColors(
-                        backgroundColor = UIConstants.BUTTON_BACKGROUND
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = UIConstants.BUTTON_BACKGROUND
                     )
                 )
             }
         }
     } else {
-        CompactChip(
+        CompactButton(
             onClick = { expanded = true },
             label = {
                 Text(
@@ -124,8 +124,8 @@ fun ModelSelector(
                     modifier = Modifier.size(UIConstants.ICON_SIZE)
                 )
             },
-            colors = ChipDefaults.chipColors(
-                backgroundColor = UIConstants.BUTTON_BACKGROUND
+            colors = ButtonDefaults.buttonColors(
+                containerColor = UIConstants.BUTTON_BACKGROUND
             )
         )
     }
@@ -196,46 +196,48 @@ fun WearAIApp(
             }
         }
         
-        SwipeDismissableNavHost(
-            navController = navController,
-            startDestination = Routes.HOME
-        ) {
-            composable(Routes.HOME) {
-                HomeScreen(
-                    models = models,
-                    selectedModel = selectedModel.value,
-                    onModelSelected = { selectedModel.value = it },
-                    textColor = textColor,
-                    backgroundColor = backgroundColor,
-                    question = question,
-                    isLoading = isLoading,
-                    onSendQuestion = sendMessage,
-                    onThemeToggle = { isDarkTheme.value = !isDarkTheme.value },
-                    onTextColorToggle = { isGreenText.value = !isGreenText.value },
-                    onViewConversation = { navController.navigate(Routes.CONVERSATION) },
-                    onOpenSettings = { navController.navigate(Routes.SETTINGS) }
-                )
-            }
+        AppScaffold {
+            SwipeDismissableNavHost(
+                navController = navController,
+                startDestination = Routes.HOME
+            ) {
+                composable(Routes.HOME) {
+                    HomeScreen(
+                        models = models,
+                        selectedModel = selectedModel.value,
+                        onModelSelected = { selectedModel.value = it },
+                        textColor = textColor,
+                        backgroundColor = backgroundColor,
+                        question = question,
+                        isLoading = isLoading,
+                        onSendQuestion = sendMessage,
+                        onThemeToggle = { isDarkTheme.value = !isDarkTheme.value },
+                        onTextColorToggle = { isGreenText.value = !isGreenText.value },
+                        onViewConversation = { navController.navigate(Routes.CONVERSATION) },
+                        onOpenSettings = { navController.navigate(Routes.SETTINGS) }
+                    )
+                }
 
-            composable(Routes.CONVERSATION) {
-                ConversationScreen(
-                    messages = conversationHistory,
-                    onBackClick = { navController.popBackStack() },
-                    isDarkTheme = isDarkTheme.value,
-                    textColor = textColor
-                )
-            }
+                composable(Routes.CONVERSATION) {
+                    ConversationScreen(
+                        messages = conversationHistory,
+                        onBackClick = { navController.popBackStack() },
+                        isDarkTheme = isDarkTheme.value,
+                        textColor = textColor
+                    )
+                }
 
-            composable(Routes.SETTINGS) {
-                // Create a Color MutableState for the settings screen
-                val selectedTextColor = remember { mutableStateOf(if (isGreenText.value) Color.Green else Color.White) }
+                composable(Routes.SETTINGS) {
+                    // Create a Color MutableState for the settings screen
+                    val selectedTextColor = remember { mutableStateOf(if (isGreenText.value) Color.Green else Color.White) }
 
-                SettingsScreen(
-                    isDarkTheme = isDarkTheme,
-                    selectedTextColor = selectedTextColor,
-                    selectedModel = selectedModel,
-                    onNavigateBack = { navController.popBackStack() }
-                )
+                    SettingsScreen(
+                        isDarkTheme = isDarkTheme,
+                        selectedTextColor = selectedTextColor,
+                        selectedModel = selectedModel,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
@@ -258,11 +260,10 @@ fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    Scaffold(
+    ScreenScaffold(
         timeText = { TimeText() },
-        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-        positionIndicator = {
-            PositionIndicator(scrollState = scrollState)
+        scrollIndicator = {
+            ScrollIndicator(scrollState = scrollState)
         }
     ) { paddingValues ->
         Column(
@@ -354,10 +355,9 @@ fun ConversationScreen(
 ) {
     val listState = rememberScalingLazyListState()
     
-    Scaffold(
+    ScreenScaffold(
         timeText = { TimeText() },
-        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-        positionIndicator = { PositionIndicator(scalingLazyListState = listState) }
+        scrollIndicator = { ScrollIndicator(scalingLazyListState = listState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -418,15 +418,12 @@ fun SettingsScreen(
     val backgroundColor = if (isDarkTheme.value) UIConstants.BACKGROUND_DARK else UIConstants.BACKGROUND_LIGHT
     val textColor = selectedTextColor.value
     
-    Scaffold(
+    ScreenScaffold(
         timeText = {
             TimeText()
         },
-        vignette = {
-            Vignette(vignettePosition = VignettePosition.TopAndBottom)
-        },
-        positionIndicator = {
-            PositionIndicator(
+        scrollIndicator = {
+            ScrollIndicator(
                 scrollState = scrollState
             )
         }
@@ -478,7 +475,7 @@ fun SettingsScreen(
                     val isSelected = selectedModel.value == model
                     val chipColor = if (isSelected) UIConstants.PRIMARY_DARK else UIConstants.BUTTON_BACKGROUND
                     
-                    CompactChip(
+                    CompactButton(
                         onClick = { selectedModel.value = model },
                         label = {
                             Text(
@@ -487,8 +484,8 @@ fun SettingsScreen(
                                 fontSize = UIConstants.CAPTION_TEXT_SIZE
                             )
                         },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = chipColor
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = chipColor
                         )
                     )
                 }
@@ -530,4 +527,4 @@ fun SettingsScreen(
             }
         }
     }
-} 
+}

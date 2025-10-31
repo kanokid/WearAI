@@ -21,13 +21,10 @@ private val DarkExpressiveColorScheme = ColorScheme(
     onTertiaryContainer = Color(0xFFCCE8DE),
     error = Color(0xFFFFB4AB),
     onError = Color(0xFF690005),
-    errorContainer = Color(0xFF93000A),
-    onErrorContainer = Color(0xFFFFDAD6),
     background = Color(0xFF191C1B),
     onBackground = Color(0xFFE1E3E1),
     surface = Color(0xFF191C1B),
     onSurface = Color(0xFFE1E3E1),
-    surfaceVariant = Color(0xFF3F4945),
     onSurfaceVariant = Color(0xFFBFC9C4),
     outline = Color(0xFF89938E)
 )
@@ -48,13 +45,10 @@ private val LightExpressiveColorScheme = ColorScheme(
     onTertiaryContainer = Color(0xFF001D36),
     error = Color(0xFFBA1A1A),
     onError = Color(0xFFFFFFFF),
-    errorContainer = Color(0xFFFFDAD6),
-    onErrorContainer = Color(0xFF410002),
     background = Color(0xFFFBFDF9),
     onBackground = Color(0xFF191C1B),
     surface = Color(0xFFFBFDF9),
     onSurface = Color(0xFF191C1B),
-    surfaceVariant = Color(0xFFDBE5E0),
     onSurfaceVariant = Color(0xFF3F4945),
     outline = Color(0xFF6F7975)
 )

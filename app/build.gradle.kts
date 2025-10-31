@@ -111,7 +111,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Wear OS specific dependencies
-    implementation("androidx.wear.compose:compose-material3:1.0.0-alpha21")
+    implementation("androidx.wear.compose:compose-material3:1.0.1")
     implementation(libs.compose.foundation)
     implementation(libs.compose.navigation)
     implementation("androidx.wear:wear-input:1.1.0")

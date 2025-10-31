@@ -22,11 +22,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.material3.*
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.graphics.vector.ImageVector
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.wear.input.RemoteInputIntentHelper
+import android.support.wearable.input.RemoteInput
 
 /**
  * Reusable UI components for the WearAI application
@@ -163,12 +169,14 @@ fun GradientMessageBubble(
             .padding(vertical = 4.dp),
         contentAlignment = alignment
     ) {
-        androidx.compose.material.Card(
+        Card(
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             shape = bubbleShape,
-            backgroundColor = bubbleColor,
-            contentColor = textColor
+            colors = CardDefaults.cardColors(
+                containerColor = bubbleColor,
+                contentColor = textColor
+            )
         ) {
             Box(
                 modifier = Modifier
@@ -307,7 +315,7 @@ fun TextInputCircle(
         }
     }
 
-    Chip(
+    Button(
         onClick = {
             // Launch the system text input
             val intent = RemoteInputIntentHelper.createActionRemoteInputIntent()
@@ -327,8 +335,8 @@ fun TextInputCircle(
                 fontSize = 12.sp
             )
         },
-        colors = ChipDefaults.chipColors(
-            backgroundColor = UIConstants.BUTTON_BACKGROUND
+        colors = ButtonDefaults.buttonColors(
+            containerColor = UIConstants.BUTTON_BACKGROUND
         ),
         modifier = modifier
     )
