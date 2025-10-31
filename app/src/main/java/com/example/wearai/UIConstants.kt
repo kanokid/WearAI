@@ -26,49 +26,47 @@ object UIConstants {
     val CAPTION_TEXT_SIZE = 12.sp
     
     // Colors
-    val BUTTON_BACKGROUND = Color(0xFF2C2F33)
-    val BUTTON_BACKGROUND_PRESSED = Color(0xFF3F4347)
-    val BUTTON_BACKGROUND_LIGHT = Color(0xFFDEDEDE)
+    val BUTTON_BACKGROUND = Color(0xFF005141)
+    val BUTTON_BACKGROUND_PRESSED = Color(0xFF00382D)
+    val BUTTON_BACKGROUND_LIGHT = Color(0xFFCCE8DE)
     
     // Theme Colors
-    val PRIMARY_DARK = Color(0xFF4F46E5)  // Indigo
-    val PRIMARY_LIGHT = Color(0xFF818CF8)  // Light Indigo
-    val SECONDARY_DARK = Color(0xFF10B981)  // Emerald
-    val SECONDARY_LIGHT = Color(0xFF34D399)  // Light Emerald
+    val PRIMARY_DARK = Color(0xFF1CE9B6)  // Green
+    val PRIMARY_LIGHT = Color(0xFF00897B)  // Light Green
     
     // User Message Bubble Colors
-    val USER_BUBBLE_COLOR = Color(0xFF4F46E5)  // Indigo
-    val LIGHT_USER_BUBBLE_COLOR = Color(0xFF818CF8)  // Light Indigo
+    val USER_BUBBLE_COLOR = Color(0xFF005141)
+    val LIGHT_USER_BUBBLE_COLOR = Color(0xFFCCE8DE)
     
     // AI Message Bubble Colors
-    val AI_BUBBLE_COLOR = Color(0xFF10B981)  // Emerald
-    val LIGHT_AI_BUBBLE_COLOR = Color(0xFF34D399)  // Light Emerald
+    val AI_BUBBLE_COLOR = Color(0xFF344C44)
+    val LIGHT_AI_BUBBLE_COLOR = Color(0xFFB0CCC2)
     
     // Gradient colors for user messages
-    val USER_GRADIENT_START_DARK = Color(0xFF4F46E5)
-    val USER_GRADIENT_END_DARK = Color(0xFF3730A3)
-    val USER_GRADIENT_START_LIGHT = Color(0xFF818CF8)
-    val USER_GRADIENT_END_LIGHT = Color(0xFF6366F1)
+    val USER_GRADIENT_START_DARK = Color(0xFF005141)
+    val USER_GRADIENT_END_DARK = Color(0xFF00382D)
+    val USER_GRADIENT_START_LIGHT = Color(0xFFCCE8DE)
+    val USER_GRADIENT_END_LIGHT = Color(0xFFB0CCC2)
     
     // Gradient colors for AI messages
-    val AI_GRADIENT_START_DARK = Color(0xFF10B981)
-    val AI_GRADIENT_END_DARK = Color(0xFF059669)
-    val AI_GRADIENT_START_LIGHT = Color(0xFF34D399)
-    val AI_GRADIENT_END_LIGHT = Color(0xFF10B981)
+    val AI_GRADIENT_START_DARK = Color(0xFF344C44)
+    val AI_GRADIENT_END_DARK = Color(0xFF1D352E)
+    val AI_GRADIENT_START_LIGHT = Color(0xFFB0CCC2)
+    val AI_GRADIENT_END_LIGHT = Color(0xFFCCE8DE)
     
     // Background colors
-    val BACKGROUND_DARK = Color(0xFF111827)
-    val BACKGROUND_LIGHT = Color(0xFFF3F4F6)
+    val BACKGROUND_DARK = Color(0xFF191C1B)
+    val BACKGROUND_LIGHT = Color(0xFFFBFDF9)
     
     // Text colors
-    val TEXT_PRIMARY_DARK = Color(0xFFF9FAFB)
-    val TEXT_SECONDARY_DARK = Color(0xFFD1D5DB)
-    val TEXT_PRIMARY_LIGHT = Color(0xFF111827)
-    val TEXT_SECONDARY_LIGHT = Color(0xFF4B5563)
+    val TEXT_PRIMARY_DARK = Color(0xFFE1E3E1)
+    val TEXT_SECONDARY_DARK = Color(0xFFBFC9C4)
+    val TEXT_PRIMARY_LIGHT = Color(0xFF191C1B)
+    val TEXT_SECONDARY_LIGHT = Color(0xFF3F4945)
     
     // Custom text colors
-    val TEXT_GREEN = Color(0xFF4ADE80)
-    val TEXT_PURPLE = Color(0xFFA78BFA)
+    val TEXT_GREEN = Color(0xFF1CE9B6)
+    val TEXT_PURPLE = Color(0xFFADC6E8)
     val TEXT_BLUE = Color(0xFF93C5FD)
     val TEXT_ORANGE = Color(0xFFFBBF24)
     val TEXT_PINK = Color(0xFFF472B6)

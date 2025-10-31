@@ -7,7 +7,7 @@ import androidx.wear.compose.material3.ColorScheme
 
 // Define expressive dark theme colors
 private val DarkExpressiveColorScheme = ColorScheme(
-    primary = Color(0xFF50E3C2),
+    primary = Color(0xFF1CE9B6),
     onPrimary = Color(0xFF00382D),
     primaryContainer = Color(0xFF005141),
     onPrimaryContainer = Color(0xFF72FEE0),
@@ -23,6 +23,7 @@ private val DarkExpressiveColorScheme = ColorScheme(
     onError = Color(0xFF690005),
     background = Color(0xFF191C1B),
     onBackground = Color(0xFFE1E3E1),
+    surface = Color(0xFF191C1B),
     onSurface = Color(0xFFE1E3E1),
     onSurfaceVariant = Color(0xFFBFC9C4),
     outline = Color(0xFF89938E)
@@ -30,7 +31,7 @@ private val DarkExpressiveColorScheme = ColorScheme(
 
 // Define expressive light theme colors
 private val LightExpressiveColorScheme = ColorScheme(
-    primary = Color(0xFF006B58),
+    primary = Color(0xFF00897B),
     onPrimary = Color(0xFFFFFFFF),
     primaryContainer = Color(0xFF72FEE0),
     onPrimaryContainer = Color(0xFF002019),
@@ -42,10 +43,11 @@ private val LightExpressiveColorScheme = ColorScheme(
     onTertiary = Color(0xFFFFFFFF),
     tertiaryContainer = Color(0xFFCCE8DE),
     onTertiaryContainer = Color(0xFF001D36),
-    error = Color(0xFFBA1A1A),
+    error = Color(0xFFB00020),
     onError = Color(0xFFFFFFFF),
     background = Color(0xFFFBFDF9),
     onBackground = Color(0xFF191C1B),
+    surface = Color(0xFFFBFDF9),
     onSurface = Color(0xFF191C1B),
     onSurfaceVariant = Color(0xFF3F4945),
     outline = Color(0xFF6F7975)
