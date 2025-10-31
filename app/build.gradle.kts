@@ -91,7 +91,7 @@ dependencies {
     // Compose dependencies from BOM
 
     // Compose dependencies from BOM
-    implementation(platform(libs.compose.bom))
+    implementation(platform("androidx.compose:compose-bom:2025.10.01"))
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material)
