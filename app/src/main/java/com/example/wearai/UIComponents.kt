@@ -1,6 +1,9 @@
 package com.example.wearai
 
+import android.app.Activity
 import androidx.annotation.DrawableRes
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,22 +20,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.*
-import androidx.compose.foundation.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.ui.graphics.vector.ImageVector
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
 import androidx.wear.input.RemoteInputIntentHelper
-import android.support.wearable.input.RemoteInput
+import androidx.wear.input.RemoteInput
 
 /**
  * Reusable UI components for the WearAI application
@@ -174,21 +169,22 @@ fun GradientMessageBubble(
                 .fillMaxWidth(0.8f),
             shape = bubbleShape,
             colors = CardDefaults.cardColors(
-                containerColor = bubbleColor,
-                contentColor = textColor
-            )
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(12.dp)
-            ) {
-                Text(
-                    text = message.text,
-                    color = textColor,
-                    fontSize = UIConstants.BODY_TEXT_SIZE
-                )
-            }
-        }
+                containerColor = bubbleColor
+            ),
+            content = {
+                Box(
+                    modifier = Modifier
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = message.text,
+                        color = textColor,
+                        fontSize = UIConstants.BODY_TEXT_SIZE
+                    )
+                }
+            },
+            onClick = {}
+        )
     }
 }
 

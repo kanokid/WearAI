@@ -114,7 +114,7 @@ dependencies {
     implementation("androidx.wear.compose:compose-material3:1.0.1")
     implementation(libs.compose.foundation)
     implementation(libs.compose.navigation)
-    implementation("androidx.wear:wear-input:1.1.0")
+    implementation("androidx.wear:wear-input:1.2.0-alpha02")
 
     // Horologist library for rotary input support
     implementation("com.google.android.horologist:horologist-compose-material:0.6.23")

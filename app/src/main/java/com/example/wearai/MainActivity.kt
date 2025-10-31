@@ -263,7 +263,7 @@ fun HomeScreen(
     ScreenScaffold(
         timeText = { TimeText() },
         scrollIndicator = {
-            ScrollIndicator(scrollState = scrollState)
+            ScrollIndicator(state = scrollState)
         }
     ) { paddingValues ->
         Column(
@@ -338,7 +338,7 @@ fun HomeScreen(
             if (isLoading.value) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    indicatorColor = textColor,
+                    color = textColor,
                     strokeWidth = 2.dp
                 )
             }
@@ -357,7 +357,7 @@ fun ConversationScreen(
     
     ScreenScaffold(
         timeText = { TimeText() },
-        scrollIndicator = { ScrollIndicator(scalingLazyListState = listState) }
+        scrollIndicator = { ScrollIndicator(state = listState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -424,7 +424,7 @@ fun SettingsScreen(
         },
         scrollIndicator = {
             ScrollIndicator(
-                scrollState = scrollState
+                state = scrollState
             )
         }
     ) { paddingValues ->
