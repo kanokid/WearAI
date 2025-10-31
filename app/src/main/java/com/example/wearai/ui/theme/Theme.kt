@@ -53,12 +53,39 @@ private val LightExpressiveColorScheme = ColorScheme(
     outline = Color(0xFF6F7975)
 )
 
+private val ClassicColorScheme = ColorScheme(
+    primary = Color(0xFF1CE9B6),
+    onPrimary = Color(0xFF00382D),
+    primaryContainer = Color(0xFF005141),
+    onPrimaryContainer = Color(0xFF72FEE0),
+    secondary = Color(0xFFB0CCC2),
+    onSecondary = Color(0xFF1D352E),
+    secondaryContainer = Color(0xFF344C44),
+    onSecondaryContainer = Color(0xFFCCE8DE),
+    tertiary = Color(0xFFADC6E8),
+    onTertiary = Color(0xFF16314D),
+    tertiaryContainer = Color(0xFF2E4865),
+    onTertiaryContainer = Color(0xFFCCE8DE),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    background = Color(0xFF191C1B),
+    onBackground = Color(0xFFE1E3E1),
+    surface = Color(0xFF191C1B),
+    onSurface = Color(0xFFE1E3E1),
+    onSurfaceVariant = Color(0xFFBFC9C4),
+    outline = Color(0xFF89938E)
+)
+
+
 @Composable
 fun WearAITheme(
     darkTheme: Boolean = true,
+    classicTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+    val colors = if (classicTheme) {
+        ClassicColorScheme
+    } else if (darkTheme) {
         DarkExpressiveColorScheme
     } else {
         LightExpressiveColorScheme

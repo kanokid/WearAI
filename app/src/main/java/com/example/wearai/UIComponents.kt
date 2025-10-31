@@ -145,9 +145,9 @@ fun GradientMessageBubble(
     textColor: Color
 ) {
     val bubbleColor = if (message.isUser) {
-        if (isDarkTheme) UIConstants.PRIMARY_DARK else UIConstants.PRIMARY_LIGHT
+        MaterialTheme.colorScheme.primaryContainer
     } else {
-        if (isDarkTheme) UIConstants.BUTTON_BACKGROUND else UIConstants.BUTTON_BACKGROUND_LIGHT
+        MaterialTheme.colorScheme.secondaryContainer
     }
     
     val bubbleShape = if (message.isUser) {

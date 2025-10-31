@@ -59,13 +59,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             // App state
             val isDarkTheme = remember { mutableStateOf(true) }
-            val isGreenText = remember { mutableStateOf(true) }
+            val useClassicTheme = remember { mutableStateOf(false) }
             val selectedModel = remember { mutableStateOf("gemini-2.5-flash") }
             val conversationHistory = remember { mutableStateListOf<Message>() }
             
             WearAIApp(
                 isDarkTheme = isDarkTheme,
-                isGreenText = isGreenText,
+                useClassicTheme = useClassicTheme,
                 selectedModel = selectedModel,
                 conversationHistory = conversationHistory
             )
@@ -134,16 +134,16 @@ fun ModelSelector(
 @Composable
 fun WearAIApp(
     isDarkTheme: MutableState<Boolean>,
-    isGreenText: MutableState<Boolean>,
+    useClassicTheme: MutableState<Boolean>,
     selectedModel: MutableState<String>,
     conversationHistory: SnapshotStateList<Message>
 ) {
-    WearAITheme(darkTheme = isDarkTheme.value) {
+    WearAITheme(darkTheme = isDarkTheme.value, classicTheme = useClassicTheme.value) {
         val navController = rememberSwipeDismissableNavController()
         val scope = rememberCoroutineScope()
         val question = remember { mutableStateOf("") }
         val isLoading = remember { mutableStateOf(false) }
-        val textColor = if (isGreenText.value) Color.Green else Color.White
+        val textColor = Color.White
         val backgroundColor = if (isDarkTheme.value) Color.Black else Color.White
         
         // Available models
@@ -191,6 +191,7 @@ fun WearAIApp(
                     } finally {
                         isLoading.value = false
                         question.value = ""
+                        navController.navigate(Routes.CONVERSATION)
                     }
                 }
             }
@@ -212,7 +213,6 @@ fun WearAIApp(
                         isLoading = isLoading,
                         onSendQuestion = sendMessage,
                         onThemeToggle = { isDarkTheme.value = !isDarkTheme.value },
-                        onTextColorToggle = { isGreenText.value = !isGreenText.value },
                         onViewConversation = { navController.navigate(Routes.CONVERSATION) },
                         onOpenSettings = { navController.navigate(Routes.SETTINGS) }
                     )
@@ -228,12 +228,9 @@ fun WearAIApp(
                 }
 
                 composable(Routes.SETTINGS) {
-                    // Create a Color MutableState for the settings screen
-                    val selectedTextColor = remember { mutableStateOf(if (isGreenText.value) Color.Green else Color.White) }
-
                     SettingsScreen(
                         isDarkTheme = isDarkTheme,
-                        selectedTextColor = selectedTextColor,
+                        useClassicTheme = useClassicTheme,
                         selectedModel = selectedModel,
                         onNavigateBack = { navController.popBackStack() }
                     )
@@ -254,7 +251,6 @@ fun HomeScreen(
     isLoading: MutableState<Boolean>,
     onSendQuestion: () -> Unit,
     onThemeToggle: () -> Unit,
-    onTextColorToggle: () -> Unit,
     onViewConversation: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
@@ -275,13 +271,6 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Model selector
-            ModelSelector(
-                models = models,
-                selectedModel = selectedModel,
-                onModelSelected = { onModelSelected(it) },
-                textColor = textColor
-            )
 
             // Action buttons row
             Row(
@@ -295,12 +284,6 @@ fun HomeScreen(
                     contentDescription = "Toggle theme"
                 )
 
-                // Text color toggle button
-                AnimatedActionIconButton(
-                    onClick = onTextColorToggle,
-                    iconResourceId = R.drawable.ic_color_toggle,
-                    contentDescription = "Toggle text color"
-                )
 
                 // History button
                 AnimatedActionIconButton(
@@ -398,7 +381,7 @@ fun ConversationScreen(
 @Composable
 fun SettingsScreen(
     isDarkTheme: MutableState<Boolean>,
-    selectedTextColor: MutableState<Color>,
+    useClassicTheme: MutableState<Boolean>,
     selectedModel: MutableState<String>,
     onNavigateBack: () -> Unit
 ) {
@@ -406,17 +389,8 @@ fun SettingsScreen(
     // Use the same models as defined in WearAIApp
     val models = listOf("gemini-2.5-flash", "gemini-2.5-flash-experimental")
     
-    val availableTextColors = listOf(
-        UIConstants.TEXT_PRIMARY_DARK,
-        UIConstants.TEXT_GREEN,
-        UIConstants.TEXT_PURPLE,
-        UIConstants.TEXT_BLUE,
-        UIConstants.TEXT_ORANGE,
-        UIConstants.TEXT_PINK
-    )
-    
     val backgroundColor = if (isDarkTheme.value) UIConstants.BACKGROUND_DARK else UIConstants.BACKGROUND_LIGHT
-    val textColor = selectedTextColor.value
+    val textColor = Color.White
     
     ScreenScaffold(
         timeText = {
@@ -461,6 +435,16 @@ fun SettingsScreen(
                     textColor = textColor
                 )
                 
+                // Classic theme toggle
+                ToggleChip(
+                    checked = useClassicTheme.value,
+                    onCheckedChange = { useClassicTheme.value = it },
+                    label = { Text("Use Classic Theme") },
+                    colors = ToggleChipDefaults.toggleChipColors(
+                        checkedEndBackgroundColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+
                 // Model selector section
                 Text(
                     text = "Model",
@@ -488,31 +472,6 @@ fun SettingsScreen(
                             containerColor = chipColor
                         )
                     )
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Text color selection
-                Text(
-                    text = "Text Color",
-                    style = MaterialTheme.typography.body1,
-                    color = textColor,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                
-                // Color selection row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    availableTextColors.forEach { color ->
-                        ColorSelectionChip(
-                            color = color,
-                            isSelected = selectedTextColor.value == color,
-                            onClick = { selectedTextColor.value = color }
-                        )
-                    }
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))
