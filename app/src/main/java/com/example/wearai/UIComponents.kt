@@ -6,7 +6,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -164,15 +163,16 @@ fun GradientMessageBubble(
             .padding(vertical = 4.dp),
         contentAlignment = alignment
     ) {
-        Card(
+        Button(
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             shape = bubbleShape,
-            colors = CardDefaults.cardColors(
+            colors = ButtonDefaults.buttonColors(
                 containerColor = bubbleColor
             ),
+            onClick = {},
             content = {
-                Box(
+                Column(
                     modifier = Modifier
                         .padding(12.dp)
                 ) {
@@ -182,8 +182,7 @@ fun GradientMessageBubble(
                         style = MaterialTheme.typography.body1
                     )
                 }
-            },
-            onClick = {}
+            }
         )
     }
 }
@@ -323,7 +322,7 @@ fun TextInputCircle(
             RemoteInputIntentHelper.putRemoteInputsExtra(intent, remoteInputs)
             launcher.launch(intent)
         },
-        label = {
+        content = {
             Text(
                 text = if (value.isEmpty()) placeholder else value,
                 color = textColor,
