@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.*
 import androidx.wear.input.RemoteInputIntentHelper
 import androidx.wear.input.RemoteInput
@@ -31,32 +30,6 @@ import androidx.wear.input.RemoteInput
 /**
  * Reusable UI components for the WearAI application
  */
-
-/**
- * A simple action button with a circular background
- */
-@Composable
-fun SimpleActionButton(
-    onClick: () -> Unit,
-    iconResourceId: Int,
-    contentDescription: String,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .size(UIConstants.ACTION_BUTTON_SIZE)
-            .clip(CircleShape)
-            .background(UIConstants.BUTTON_BACKGROUND)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = iconResourceId),
-            contentDescription = contentDescription,
-            modifier = Modifier.size(UIConstants.ICON_SIZE)
-        )
-    }
-}
 
 /**
  * An animated action button that scales when pressed
@@ -70,27 +43,23 @@ fun AnimatedActionIconButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val scale = animateFloatAsState(if (isPressed) 0.9f else 1f)
+    val scale = animateFloatAsState(if (isPressed) 0.9f else 1f, label = "scale")
 
-    Box(
+    Button(
+        onClick = onClick,
         modifier = modifier
             .size(UIConstants.ACTION_BUTTON_SIZE)
-            .clip(CircleShape)
-            .background(UIConstants.BUTTON_BACKGROUND)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick
-            )
             .scale(scale.value),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = iconResourceId),
-            contentDescription = contentDescription,
-            modifier = Modifier.size(UIConstants.ICON_SIZE)
-        )
-    }
+        shape = CircleShape,
+        interactionSource = interactionSource,
+        content = {
+            Icon(
+                painter = painterResource(id = iconResourceId),
+                contentDescription = contentDescription,
+                modifier = Modifier.size(UIConstants.ICON_SIZE)
+            )
+        }
+    )
 }
 
 /**
@@ -103,184 +72,17 @@ fun SettingsChip(
     onClick: () -> Unit,
     textColor: Color
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(UIConstants.BUTTON_BACKGROUND)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+    Chip(
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(text) },
+        icon = {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = textColor,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(UIConstants.ICON_SIZE)
             )
-            
-            Text(
-                text = text,
-                color = textColor,
-                style = MaterialTheme.typography.body1,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-/**
- * A modern message bubble with gradient background
- */
-@Composable
-fun GradientMessageBubble(
-    message: Message,
-    isDarkTheme: Boolean,
-    textColor: Color
-) {
-    val bubbleColor = if (message.isUser) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.secondaryContainer
-    }
-    
-    val bubbleShape = if (message.isUser) {
-        RoundedCornerShape(16.dp, 16.dp, 4.dp, 16.dp)
-    } else {
-        RoundedCornerShape(16.dp, 16.dp, 16.dp, 4.dp)
-    }
-    
-    val alignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
-    
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        contentAlignment = alignment
-    ) {
-        Button(
-            modifier = Modifier
-                .fillMaxWidth(0.8f),
-            shape = bubbleShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = bubbleColor
-            ),
-            onClick = {},
-            content = {
-                Column(
-                    modifier = Modifier
-                        .padding(12.dp)
-                ) {
-                    Text(
-                        text = message.text,
-                        color = textColor,
-                        style = MaterialTheme.typography.body1
-                    )
-                }
-            }
-        )
-    }
-}
-
-/**
- * A circular FAB for the main actions
- */
-@Composable
-fun CircularActionButton(
-    onClick: () -> Unit,
-    @DrawableRes iconResourceId: Int,
-    contentDescription: String,
-    backgroundColor: Color
-) {
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (isPressed) 0.9f else 1f, label = "")
-    
-    Box(
-        modifier = Modifier
-            .scale(scale)
-            .size(64.dp)
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = {
-                    onClick()
-                    isPressed = false
-                }
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = iconResourceId),
-            contentDescription = contentDescription,
-            tint = Color.White,
-            modifier = Modifier.size(32.dp)
-        )
-    }
-}
-
-/**
- * An animated action button with background color
- */
-@Composable
-fun AnimatedActionButton(
-    onClick: () -> Unit,
-    @DrawableRes iconResourceId: Int,
-    contentDescription: String,
-    backgroundColor: Color
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val scale = animateFloatAsState(if (isPressed) 0.9f else 1f, label = "")
-
-    Box(
-        modifier = Modifier
-            .size(UIConstants.ACTION_BUTTON_SIZE)
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick
-            )
-            .scale(scale.value),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = iconResourceId),
-            contentDescription = contentDescription,
-            tint = Color.White,
-            modifier = Modifier.size(UIConstants.ICON_SIZE)
-        )
-    }
-}
-
-/**
- * A color selector chip for the settings screen
- */
-@Composable
-fun ColorSelectionChip(
-    color: Color,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val borderSize = if (isSelected) 3.dp else 0.dp
-    
-    Box(
-        modifier = Modifier
-            .size(36.dp)
-            .clip(CircleShape)
-            .background(Color.White)
-            .padding(borderSize)
-            .clip(CircleShape)
-            .background(color)
-            .clickable(onClick = onClick)
+        },
+        onClick = onClick
     )
 }
 
@@ -312,7 +114,6 @@ fun TextInputCircle(
 
     Button(
         onClick = {
-            // Launch the system text input
             val intent = RemoteInputIntentHelper.createActionRemoteInputIntent()
             val remoteInputs = listOf(
                 RemoteInput.Builder("input_text")
@@ -322,18 +123,17 @@ fun TextInputCircle(
             RemoteInputIntentHelper.putRemoteInputsExtra(intent, remoteInputs)
             launcher.launch(intent)
         },
+        modifier = modifier.size(64.dp),
+        shape = CircleShape,
         content = {
             Text(
                 text = if (value.isEmpty()) placeholder else value,
                 color = textColor,
                 maxLines = 2,
-                style = MaterialTheme.typography.caption1
+                style = MaterialTheme.typography.caption1,
+                textAlign = TextAlign.Center
             )
-        },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = UIConstants.BUTTON_BACKGROUND
-        ),
-        modifier = modifier
+        }
     )
 }
 
@@ -347,49 +147,75 @@ fun MessageBubble(
     textColor: Color,
     modifier: Modifier = Modifier
 ) {
-    val userGradient = Brush.linearGradient(
-        colors = if (isDarkTheme) 
-            listOf(UIConstants.USER_BUBBLE_COLOR, UIConstants.USER_BUBBLE_COLOR.copy(alpha = 0.7f)) 
-        else 
-            listOf(UIConstants.LIGHT_USER_BUBBLE_COLOR, UIConstants.LIGHT_USER_BUBBLE_COLOR.copy(alpha = 0.7f))
-    )
+    val bubbleColor = if (message.isUser) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.secondaryContainer
+    }
     
-    val aiGradient = Brush.linearGradient(
-        colors = if (isDarkTheme) 
-            listOf(UIConstants.AI_BUBBLE_COLOR, UIConstants.AI_BUBBLE_COLOR.copy(alpha = 0.7f)) 
-        else 
-            listOf(UIConstants.LIGHT_AI_BUBBLE_COLOR, UIConstants.LIGHT_AI_BUBBLE_COLOR.copy(alpha = 0.7f))
-    )
+    val bubbleShape = if (message.isUser) {
+        RoundedCornerShape(16.dp, 16.dp, 4.dp, 16.dp)
+    } else {
+        RoundedCornerShape(16.dp, 16.dp, 16.dp, 4.dp)
+    }
     
-    val bubbleAlignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
-    
-    val bubbleShape = RoundedCornerShape(
-        topStart = if (message.isUser) 8.dp else 2.dp,
-        topEnd = if (message.isUser) 2.dp else 8.dp,
-        bottomStart = 8.dp,
-        bottomEnd = 8.dp
-    )
+    val alignment = if (message.isUser) Alignment.CenterEnd else Alignment.CenterStart
     
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        contentAlignment = bubbleAlignment
+            .padding(vertical = 4.dp),
+        contentAlignment = alignment
     ) {
         Box(
             modifier = Modifier
                 .widthIn(max = 200.dp)
                 .clip(bubbleShape)
-                .background(if (message.isUser) userGradient else aiGradient)
+                .background(bubbleColor)
                 .padding(12.dp)
         ) {
             Text(
                 text = message.text,
-                color = textColor,
+                color = if (message.isUser) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.body1
             )
         }
     }
+}
+
+/**
+ * An animated action button with background color
+ */
+@Composable
+fun AnimatedActionButton(
+    onClick: () -> Unit,
+    @DrawableRes iconResourceId: Int,
+    contentDescription: String,
+    backgroundColor: Color
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale = animateFloatAsState(if (isPressed) 0.9f else 1f, label = "")
+
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .size(UIConstants.ACTION_BUTTON_SIZE)
+            .scale(scale.value),
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor
+        ),
+        interactionSource = interactionSource,
+        content = {
+            Icon(
+                painter = painterResource(id = iconResourceId),
+                contentDescription = contentDescription,
+                tint = Color.White,
+                modifier = Modifier.size(UIConstants.ICON_SIZE)
+            )
+        }
+    )
 }
 
 /**
@@ -399,4 +225,4 @@ data class Message(
     val text: String,
     val isUser: Boolean,
     val timestamp: Long = System.currentTimeMillis()
-) 
+)

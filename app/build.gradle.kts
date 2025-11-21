@@ -83,15 +83,12 @@ android {
 
 dependencies {
     // Core Android dependencies
-    // Core Android dependencies
     implementation(libs.core.ktx)
     implementation(libs.wear)
     implementation(libs.activity.compose)
 
     // Compose dependencies from BOM
-
-    // Compose dependencies from BOM
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material)
@@ -100,11 +97,7 @@ dependencies {
     implementation(libs.runtime.livedata)
 
     // Lifecycle and ViewModel
-
-    // Lifecycle and ViewModel
     implementation(libs.lifecycle.viewmodel.compose)
-
-    // Generative AI
 
     // Generative AI
     implementation(libs.generativeai)
@@ -126,13 +119,8 @@ dependencies {
     implementation(libs.core.splashscreen)
 
     // Desugaring for newer Java APIs on older Android versions
-
     coreLibraryDesugaring(libs.desugar)
 
     // Debug tools
     debugImplementation(libs.ui.tooling)
-
-    // Recommended to add test dependencies
-    // testImplementation(libs.junit)
-    // androidTestImplementation(libs.androidx.test.ext.junit)
 }

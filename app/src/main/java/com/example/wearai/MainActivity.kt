@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.*
 import androidx.wear.compose.foundation.lazy.AutoCenteringParams
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
@@ -34,16 +33,7 @@ import kotlinx.coroutines.launch
  * WearAI Application
  *
  * A Wear OS app that uses Gemini AI to generate responses to user questions.
- * Features include:
- * - Multiple model selection
- * - Dark/light theme toggle
- * - Text color customization
- * - Conversation history
- * - Rotary scrolling support (via standard Wear OS scrolling)
  */
-
-// API key will be retrieved from resources
-// This is safer than hardcoding it in the source code
 
 // Navigation routes
 private object Routes {
@@ -57,7 +47,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
-            // App state
             val isDarkTheme = remember { mutableStateOf(true) }
             val useClassicTheme = remember { mutableStateOf(false) }
             val selectedModel = remember { mutableStateOf("gemini-2.5-flash") }
@@ -74,64 +63,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ModelSelector(
-    models: List<String>,
-    selectedModel: String,
-    onModelSelected: (String) -> Unit,
-    textColor: Color,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    if (expanded) {
-        ScalingLazyColumn(
-            modifier = modifier.fillMaxSize(),
-        ) {
-            items(models) { model ->
-                CompactButton(
-                    onClick = {
-                        onModelSelected(model)
-                        expanded = false
-                    },
-                    label = {
-                        Text(
-                            text = model,
-                            color = textColor,
-                            style = MaterialTheme.typography.caption1
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = UIConstants.BUTTON_BACKGROUND
-                    )
-                )
-            }
-        }
-    } else {
-        CompactButton(
-            onClick = { expanded = true },
-            label = {
-                Text(
-                    text = "Model: ${selectedModel.substringAfter("gemini-")}",
-                    color = textColor,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.caption1
-                )
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_model),
-                    contentDescription = "Select model",
-                    modifier = Modifier.size(UIConstants.ICON_SIZE)
-                )
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = UIConstants.BUTTON_BACKGROUND
-            )
-        )
-    }
-}
-
-@Composable
 fun WearAIApp(
     isDarkTheme: MutableState<Boolean>,
     useClassicTheme: MutableState<Boolean>,
@@ -143,86 +74,52 @@ fun WearAIApp(
         val scope = rememberCoroutineScope()
         val question = remember { mutableStateOf("") }
         val isLoading = remember { mutableStateOf(false) }
-        val textColor = Color.White
-        val backgroundColor = if (isDarkTheme.value) Color.Black else Color.White
 
-        // Available models
         val models = listOf("gemini-2.5-flash", "gemini-2.5-flash-experimental")
-
-        // Get API key from resources
         val apiKey = stringResource(id = R.string.gemini_api_key)
 
-        // Set up AI model
         val generativeModel = remember(selectedModel.value, apiKey) {
-            GenerativeModel(
-                modelName = selectedModel.value,
-                apiKey = apiKey
-            )
+            GenerativeModel(modelName = selectedModel.value, apiKey = apiKey)
         }
 
-        // Function to handle sending messages
         val sendMessage = {
             if (question.value.isNotEmpty()) {
-                // Add user message to history
-                val userMessage = Message(
-                    text = question.value,
-                    isUser = true
-                )
-                conversationHistory.add(userMessage)
-
-                // Start loading
+                conversationHistory.add(Message(text = question.value, isUser = true))
                 isLoading.value = true
 
-                // Use coroutine to get AI response
                 scope.launch {
                     try {
                         val response = generativeModel.generateContent(question.value)
-                        val aiMessage = Message(
-                            text = response.text ?: "Sorry, I couldn't generate a response.",
-                            isUser = false
-                        )
-                        conversationHistory.add(aiMessage)
+                        conversationHistory.add(Message(text = response.text ?: "No response", isUser = false))
                     } catch (e: Exception) {
-                        val errorMessage = Message(
-                            text = "Error: ${e.message}",
-                            isUser = false
-                        )
-                        conversationHistory.add(errorMessage)
+                        conversationHistory.add(Message(text = "Error: ${e.message}", isUser = false))
                     } finally {
                         isLoading.value = false
                         question.value = ""
+                        navController.navigate(Routes.CONVERSATION)
                     }
                 }
             }
         }
 
-        SwipeDismissableNavHost(
-            navController = navController,
-            startDestination = Routes.HOME
-        ) {
-            composable(Routes.HOME) { backStackEntry ->
+        SwipeDismissableNavHost(navController = navController, startDestination = Routes.HOME) {
+            composable(Routes.HOME) {
                 HomeScreen(
-                    textColor = textColor,
-                    backgroundColor = backgroundColor,
                     question = question,
                     isLoading = isLoading,
                     onSendQuestion = sendMessage,
-                    onThemeToggle = { isDarkTheme.value = !isDarkTheme.value },
                     onViewConversation = { navController.navigate(Routes.CONVERSATION) },
                     onOpenSettings = { navController.navigate(Routes.SETTINGS) }
                 )
             }
-
-            composable(Routes.CONVERSATION) { backStackEntry ->
+            composable(Routes.CONVERSATION) {
                 ConversationScreen(
                     messages = conversationHistory,
                     onBackClick = { navController.popBackStack() },
-                    isDarkTheme = isDarkTheme.value,
-                    textColor = textColor
+                    isDarkTheme = isDarkTheme.value
                 )
             }
-
-            composable(Routes.SETTINGS) { backStackEntry ->
+            composable(Routes.SETTINGS) {
                 SettingsScreen(
                     isDarkTheme = isDarkTheme,
                     useClassicTheme = useClassicTheme,
@@ -237,12 +134,9 @@ fun WearAIApp(
 
 @Composable
 fun HomeScreen(
-    textColor: Color,
-    @Suppress("UNUSED_PARAMETER") backgroundColor: Color, // Kept for API compatibility
     question: MutableState<String>,
     isLoading: MutableState<Boolean>,
     onSendQuestion: () -> Unit,
-    onThemeToggle: () -> Unit,
     onViewConversation: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
@@ -250,41 +144,25 @@ fun HomeScreen(
 
     ScreenScaffold(
         timeText = { TimeText() },
-        scrollIndicator = {
-            ScrollIndicator(state = scrollState)
-        }
-    ) { paddingValues ->
+        scrollIndicator = { ScrollIndicator(state = scrollState) }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .padding(16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Center)
         ) {
-
-            // Action buttons row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                // Theme toggle button
-                AnimatedActionIconButton(
-                    onClick = onThemeToggle,
-                    iconResourceId = R.drawable.ic_theme_toggle,
-                    contentDescription = "Toggle theme"
-                )
-
-
-                // History button
                 AnimatedActionIconButton(
                     onClick = onViewConversation,
                     iconResourceId = R.drawable.ic_history,
                     contentDescription = "View conversation history"
                 )
-
-                // Settings button
                 AnimatedActionIconButton(
                     onClick = onOpenSettings,
                     iconResourceId = R.drawable.ic_settings,
@@ -292,15 +170,13 @@ fun HomeScreen(
                 )
             }
 
-            // Text input
             TextInputCircle(
                 placeholder = "Ask Gemini...",
                 value = question.value,
                 onValueChange = { question.value = it },
-                textColor = textColor
+                textColor = Color.White
             )
 
-            // Send button
             if (question.value.isNotEmpty()) {
                 AnimatedActionIconButton(
                     onClick = onSendQuestion,
@@ -309,11 +185,10 @@ fun HomeScreen(
                 )
             }
 
-            // Loading indicator
             if (isLoading.value) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    indicatorColor = textColor,
+                    indicatorColor = MaterialTheme.colorScheme.primary,
                     strokeWidth = 2.dp
                 )
             }
@@ -325,46 +200,36 @@ fun HomeScreen(
 fun ConversationScreen(
     messages: List<Message>,
     onBackClick: () -> Unit,
-    isDarkTheme: Boolean,
-    textColor: Color
+    isDarkTheme: Boolean
 ) {
     val listState = rememberScalingLazyListState()
 
     ScreenScaffold(
         timeText = { TimeText() },
         scrollIndicator = { PositionIndicator(scalingLazyListState = listState) }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+    ) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            autoCentering = AutoCenteringParams(itemIndex = 0)
         ) {
-            // Back button
-            CompactButton(
-                onClick = { onBackClick() },
-                modifier = Modifier.padding(PaddingValues(top = 8.dp, start = 8.dp))
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "Go back"
-                )
-            }
-
-            // Message list with standard Wear OS scrolling
-            ScalingLazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 8.dp),
-                state = listState,
-                autoCentering = AutoCenteringParams(itemIndex = 0)
-            ) {
-                items(messages) { message ->
-                    MessageBubble(
-                        message = message,
-                        isDarkTheme = isDarkTheme,
-                        textColor = textColor
+            item {
+                Button(
+                    onClick = onBackClick,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = "Go back"
                     )
                 }
+            }
+            items(messages) { message ->
+                MessageBubble(
+                    message = message,
+                    isDarkTheme = isDarkTheme,
+                    textColor = Color.White
+                )
             }
         }
     }
@@ -380,98 +245,60 @@ fun SettingsScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    val backgroundColor = if (isDarkTheme.value) UIConstants.BACKGROUND_DARK else UIConstants.BACKGROUND_LIGHT
-    val textColor = Color.White
-
     ScreenScaffold(
-        timeText = {
-            TimeText()
-        },
-        scrollIndicator = {
-            ScrollIndicator(
-                state = scrollState
-            )
-        }
-    ) { paddingValues ->
-        Box(
+        timeText = { TimeText() },
+        scrollIndicator = { ScrollIndicator(state = scrollState) }
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .background(backgroundColor)
+                .padding(16.dp)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(UIConstants.ITEM_SPACING)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(PaddingValues(top = 40.dp, bottom = 16.dp, start = 16.dp, end = 16.dp))
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(UIConstants.ITEM_SPACING)
-            ) {
-                // Settings title
-                Text(
-                    text = "Settings",
-                    style = MaterialTheme.typography.title3,
-                    color = textColor,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Text(
+                text = "Settings",
+                style = MaterialTheme.typography.title3,
+                textAlign = TextAlign.Center
+            )
 
-                Spacer(modifier = Modifier.height(8.dp))
+            SettingsChip(
+                text = if (isDarkTheme.value) "Dark Theme" else "Light Theme",
+                icon = R.drawable.ic_theme_toggle,
+                onClick = { isDarkTheme.value = !isDarkTheme.value },
+                textColor = Color.White
+            )
 
-                // Theme selector
-                SettingsChip(
-                    text = if (isDarkTheme.value) "Dark Theme" else "Light Theme",
-                    icon = R.drawable.ic_theme_toggle,
-                    onClick = { isDarkTheme.value = !isDarkTheme.value },
-                    textColor = textColor
-                )
+            ToggleChip(
+                checked = useClassicTheme.value,
+                onCheckedChange = { useClassicTheme.value = it },
+                label = { Text("Use Classic Theme") }
+            )
 
-                // Classic theme toggle
-                ToggleChip(
-                    checked = useClassicTheme.value,
-                    onCheckedChange = { useClassicTheme.value = it },
-                    label = { Text("Use Classic Theme") }
-                )
+            Text(
+                text = "Model",
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Center
+            )
 
-                // Model selector section
-                Text(
-                    text = "Model",
-                    style = MaterialTheme.typography.body1,
-                    color = textColor,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Model selection chips
-                models.forEach { model ->
-                    val isSelected = selectedModel.value == model
-                    val chipColor = if (isSelected) UIConstants.PRIMARY_DARK else UIConstants.BUTTON_BACKGROUND
-
-                    CompactButton(
-                        onClick = { selectedModel.value = model },
-                        label = {
-                            Text(
-                                text = model.substringAfter("gemini-"),
-                                color = textColor,
-                                style = MaterialTheme.typography.caption1
-                            )
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = chipColor
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Back button
-                AnimatedActionButton(
-                    onClick = onNavigateBack,
-                    iconResourceId = R.drawable.ic_back,
-                    contentDescription = "Back to home",
-                    backgroundColor = UIConstants.PRIMARY_DARK
+            models.forEach { model ->
+                val isSelected = selectedModel.value == model
+                CompactButton(
+                    onClick = { selectedModel.value = model },
+                    label = { Text(model.substringAfter("gemini-")) },
+                    colors = if (isSelected) ButtonDefaults.primaryButtonColors() else ButtonDefaults.secondaryButtonColors()
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AnimatedActionButton(
+                onClick = onNavigateBack,
+                iconResourceId = R.drawable.ic_back,
+                contentDescription = "Back to home",
+                backgroundColor = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
